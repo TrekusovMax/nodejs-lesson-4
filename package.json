@@ -1,6 +1,28 @@
 {
-  "dependencies": {
-    "chalk": "^4.1.2",
-    "yargs": "^17.4.0"
-  }
+	"dependencies": {
+		"chalk": "^4.1.2",
+		"yargs": "^17.4.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.15"
+	},
+	"name": "2.-begin",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"serve": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TrekusovMax/nodejs-lesson-2.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/TrekusovMax/nodejs-lesson-2/issues"
+	},
+	"homepage": "https://github.com/TrekusovMax/nodejs-lesson-2#readme",
+	"description": ""
 }
