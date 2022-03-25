@@ -43,9 +43,18 @@ async function removeNote(id) {
 	await saveNotes(filtered)
 	console.log(chalk.red(`Note with id="${id}" has been removed.`))
 }
+async function updateNote(id, title) {
+	const notes = await getNotes()
+
+	notes.forEach((note) => (note.id === id ? (note.title = title) : note))
+
+	await saveNotes(notes)
+	console.log(chalk.yellowBright(`Note with id="${id}" has been updated.`))
+}
 
 module.exports = {
 	addNote,
 	getNotes,
-	removeNote
+	removeNote,
+	updateNote
 }
