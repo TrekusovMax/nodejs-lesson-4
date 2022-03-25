@@ -1,39 +1,41 @@
-const http = require("http")
+const express = require("express")
 const chalk = require("chalk")
-const fs = require("fs/promises")
+const { addNote, getNotes, removeNote } = require("./notes.controller")
 const path = require("path")
-const { addNote } = require("./notes.controller")
 
 const port = 3000
+const app = express()
 
-const basePath = path.join(__dirname, "pages")
+app.set("view engine", "ejs")
+app.set("views", "pages")
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.resolve(__dirname, "public")))
 
-const server = http.createServer(async (req, res) => {
-	if (req.method === "GET") {
-		const content = await fs.readFile(path.join(basePath, "index.html"))
-
-		res.writeHead(200, {
-			"Content-Type": "text/html"
-		})
-		res.end(content)
-	} else if (req.method === "POST") {
-		const body = []
-		res.writeHead(200, {
-			"Content-Type": "text/plain; charset=utf-8"
-		})
-
-		req.on("data", (data) => {
-			body.push(Buffer.from(data))
-		})
-
-		req.on("end", () => {
-			const title = body.toString().split("=")[1].replaceAll("+", " ")
-			addNote(title)
-			res.end(`Title=${title}`)
-		})
-	}
+app.get("/", async (req, res) => {
+	res.render("index", {
+		title: "Express app",
+		notes: await getNotes(),
+		created: false
+	})
+})
+app.post("/", async (req, res) => {
+	await addNote(req.body.title)
+	res.render("index", {
+		title: "Express app",
+		notes: await getNotes(),
+		created: true
+	})
 })
 
-server.listen(port, () => {
+app.delete("/:id", async (req, res) => {
+	await removeNote(req.params.id)
+	res.render("index", {
+		title: "Express app",
+		notes: await getNotes(),
+		created: false
+	})
+})
+
+app.listen(port, () => {
 	console.log(chalk.green(`Server has been started on port ${port}...`))
 })

@@ -22,33 +22,6 @@ async function getNotes() {
 	return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : []
 }
 
-async function removeNote(id) {
-	const notes = await getNotes()
-	const newNotes = []
-
-	let error = true
-	//проверяем, есть ли запись с таким ID
-	notes.forEach((note) => {
-		if (note.id === id) {
-			error = false
-		}
-	})
-	// если запись не найдена, сообщаем об этом
-	// иначе удаляем запись из БД
-	if (error) {
-		console.log(chalk.bgRed(`Note with ID ${id} not found!`))
-	} else {
-		notes.forEach((note) => {
-			if (note.id !== id) {
-				newNotes.push(note)
-			}
-		})
-
-		await saveNotes(newNotes)
-		console.log(chalk.bgRed(`Note with ID ${id} was removed!`))
-	}
-}
-
 async function saveNotes(notes) {
 	await fs.writeFile(notesPath, JSON.stringify(notes))
 }
@@ -58,12 +31,21 @@ async function printNotes() {
 
 	console.log(chalk.bgBlue("Here is the list of notes:"))
 	notes.forEach((note) => {
-		console.log(chalk.yellow(note.id), chalk.blue(note.title))
+		console.log(chalk.bgWhite(note.id), chalk.blue(note.title))
 	})
+}
+
+async function removeNote(id) {
+	const notes = await getNotes()
+
+	const filtered = notes.filter((note) => note.id !== id)
+
+	await saveNotes(filtered)
+	console.log(chalk.red(`Note with id="${id}" has been removed.`))
 }
 
 module.exports = {
 	addNote,
-	printNotes,
+	getNotes,
 	removeNote
 }
